@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Attack()
-    { 
+    {
         _animation.SetAttackAnimation();
     }
 }
