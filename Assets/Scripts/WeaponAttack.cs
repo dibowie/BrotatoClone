@@ -11,17 +11,31 @@ public class WeaponAttack : MonoBehaviour
     [SerializeField] private float _cycleTime;
     [SerializeField] private Transform _weaponTransform;
     [SerializeField] private int _damageAmount;
-    
-    
-    
-    private void Update()
+    private bool canAttack = true;
+
+    private void Start()
     {
-       
-        if (Input.GetKeyDown(KeyCode.T))
+        PlayerController.OnPlayerAttack += PlayerController_OnPlayerAttack;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnPlayerAttack -= PlayerController_OnPlayerAttack;
+    }
+
+    private void PlayerController_OnPlayerAttack(object sender, EventArgs e)
+    {
+        if (canAttack)
         {
-            _weaponTransform.DOLocalMove(new Vector3(_xdirection,_ydirection,0), _cycleTime).SetEase(Ease.InFlash).SetLoops(2, LoopType.Yoyo);
+            canAttack = false;
+            _weaponTransform.DOLocalMove(new Vector3(_xdirection, _ydirection, 0), _cycleTime).
+                SetEase(Ease.InFlash).
+                SetLoops(2, LoopType.Yoyo);
+            canAttack = false;
+            StartCoroutine(TweenTime());
         }
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy"))
@@ -31,5 +45,11 @@ public class WeaponAttack : MonoBehaviour
             EnemyController enemyController = other.GetComponent<EnemyController>();
             enemyController.TakeDamage(_damageAmount);
         }
+    }
+
+    IEnumerator TweenTime()
+    {
+        yield return new WaitForSeconds(1); 
+        canAttack = true;
     }
 }

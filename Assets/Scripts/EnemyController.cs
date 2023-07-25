@@ -2,25 +2,36 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 public class EnemyController : MonoBehaviour
 {
-    
-    [SerializeField] private Transform _target;
+
+    private GameObject _target;
     [SerializeField] private float _enemyMoveSpeed;
     private Rigidbody2D _rigidbody;
 
-    private int _enemyMaxHealth = 10;
+    private int _enemyMaxHealth = 2;
     private int _enemyCurrentHealth;
+    
+    [SerializeField] private float _strength;
+    [SerializeField] private float _duration;
+
+    private Vector2 _initialScale;
+
+
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _target = GameObject.Find("Player");
     }
 
     private void Start()
     {
+        _initialScale = transform.localScale;
         _enemyCurrentHealth = _enemyMaxHealth;
     }
 
@@ -32,9 +43,22 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         _enemyCurrentHealth -= damage;
+        transform.DOShakeScale(_duration, _strength).OnComplete(() => ResetScale());
+        
         if (_enemyCurrentHealth <= 0)
         {
-            Destroy(gameObject);
+            StartCoroutine(DeadRoutine());
         }
     }
+    private void ResetScale()
+    {
+        transform.localScale = _initialScale;
+    }
+
+    private IEnumerator DeadRoutine()
+    {
+        yield return new WaitForSeconds(0.3f);
+        Destroy(gameObject);
+    }
+    
 }

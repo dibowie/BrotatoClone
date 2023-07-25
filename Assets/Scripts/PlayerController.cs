@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+    public static event EventHandler OnPlayerAttack;
+    
     [SerializeField] private InputController _input;
     [SerializeField] private AnimationController _animation;
     
@@ -14,6 +16,9 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private float _moveSpeed;
     private bool isFacingRight;
+    
+    private float areaRadius = 2f;
+    [SerializeField] private LayerMask targetLayerMask;
     
 
     private void Awake()
@@ -28,6 +33,7 @@ public class PlayerController : MonoBehaviour
         {
             Attack();
         }
+        DetectEnemyInArea();
     }
 
     private void FixedUpdate()
@@ -60,5 +66,21 @@ public class PlayerController : MonoBehaviour
     private void Attack()
     {
         _animation.SetAttackAnimation();
+    }
+
+    private void DetectEnemyInArea()
+    {
+        
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, areaRadius, targetLayerMask);
+
+        foreach (var collider in colliders)
+        {
+            if (collider.gameObject.CompareTag("Enemy"))
+            {
+                Attack();
+                OnPlayerAttack?.Invoke(this,EventArgs.Empty);
+                
+            }
+        }
     }
 }
