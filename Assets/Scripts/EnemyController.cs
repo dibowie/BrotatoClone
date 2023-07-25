@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Object = UnityEngine.Object;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -20,7 +21,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _duration;
 
     private Vector2 _initialScale;
-
+    [SerializeField] private GameObject goldPrefab;
 
 
     private void Awake()
@@ -59,6 +60,11 @@ public class EnemyController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.3f);
         Destroy(gameObject);
+        MakeGold();
     }
-    
+
+    private void MakeGold()
+    {
+        Instantiate(goldPrefab, transform.position,Quaternion.identity);
+    }
 }

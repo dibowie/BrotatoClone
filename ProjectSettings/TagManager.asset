@@ -7,6 +7,7 @@ TagManager:
   - sword
   - fist
   - Enemy
+  - Gold
   layers:
   - Default
   - TransparentFX
@@ -43,4 +44,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player
+    uniqueID: 336633693
     locked: 0

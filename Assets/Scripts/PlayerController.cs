@@ -79,8 +79,8 @@ public class PlayerController : MonoBehaviour
             {
                 Attack();
                 OnPlayerAttack?.Invoke(this,EventArgs.Empty);
-                
             }
+            
         }
     }
 }

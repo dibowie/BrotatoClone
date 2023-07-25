@@ -223,5 +223,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyMoveSpeed: 1
-  _strength: 0.7
+  _strength: 0.4
   _duration: 0.3
+  goldPrefab: {fileID: 5257440663989976167, guid: 808142d59837dcb4c9abc74108b57e70, type: 3}
