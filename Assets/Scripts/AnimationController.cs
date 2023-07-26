@@ -36,5 +36,6 @@ public class AnimationController : MonoBehaviour
     public void SetAttackAnimation()
     {
         _animator.SetTrigger("attack");
+        
     }
 }

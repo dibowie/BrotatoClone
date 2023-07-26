@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : Singleton<PlayerController>
 {
     public static event EventHandler OnPlayerAttack;
     
@@ -19,11 +19,21 @@ public class PlayerController : MonoBehaviour
     
     private float areaRadius = 2f;
     [SerializeField] private LayerMask targetLayerMask;
-    
 
-    private void Awake()
+   // public int currentHealth { get; private set; } 
+    private int maxHealth = 100;
+    public int currentHealth;
+
+
+    protected override void Awake()
     {
+        base.Awake();
         _rigidbody = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
     }
 
     private void Update()
@@ -81,6 +91,16 @@ public class PlayerController : MonoBehaviour
                 OnPlayerAttack?.Invoke(this,EventArgs.Empty);
             }
             
+        }
+    }
+    
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log(currentHealth);
+        if (currentHealth <= 0)
+        {
+            gameObject.SetActive(false);
         }
     }
 }

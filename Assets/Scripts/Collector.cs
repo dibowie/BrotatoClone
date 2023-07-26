@@ -9,7 +9,7 @@ public class Collector : MonoBehaviour
         {
             Debug.Log("collected");
             collectable.Collect();
-            other.gameObject.SetActive(false);
+            Destroy(other.gameObject);
         }
     }
 }

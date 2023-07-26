@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Object = UnityEngine.Object;
+
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     private GameObject _target;
     [SerializeField] private float _enemyMoveSpeed;
     private Rigidbody2D _rigidbody;
+    private Vector2 moveDirection;
 
     private int _enemyMaxHealth = 2;
     private int _enemyCurrentHealth;
@@ -27,7 +28,6 @@ public class EnemyController : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _target = GameObject.Find("Player");
     }
 
     private void Start()
@@ -36,9 +36,20 @@ public class EnemyController : MonoBehaviour
         _enemyCurrentHealth = _enemyMaxHealth;
     }
 
+    private void Update()
+    {
+        EnemyMoveDirection();
+    }
+
     private void FixedUpdate()
     {
-        transform.position = Vector2.MoveTowards(transform.position, _target.transform.position,_enemyMoveSpeed*Time.fixedDeltaTime);
+        _rigidbody.velocity = new Vector2(moveDirection.x, moveDirection.y) * _enemyMoveSpeed * Time.fixedDeltaTime;
+    }
+
+    private void EnemyMoveDirection()
+    {
+        Vector3 direction = (PlayerController.Instance.transform.position - transform.position).normalized;
+        moveDirection = direction;
     }
     
     public void TakeDamage(int damage)
@@ -51,6 +62,7 @@ public class EnemyController : MonoBehaviour
             StartCoroutine(DeadRoutine());
         }
     }
+    
     private void ResetScale()
     {
         transform.localScale = _initialScale;
@@ -66,5 +78,13 @@ public class EnemyController : MonoBehaviour
     private void MakeGold()
     {
         Instantiate(goldPrefab, transform.position,Quaternion.identity);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (PlayerController.Instance)
+        {
+            PlayerController.Instance.TakeDamage(1);
+        }
     }
 }
