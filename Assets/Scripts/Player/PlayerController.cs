@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -10,18 +11,15 @@ public class PlayerController : Singleton<PlayerController>
     
     [SerializeField] private InputController _input;
     [SerializeField] private AnimationController _animation;
-    
-    
-    private Rigidbody2D _rigidbody;
-    
-    [SerializeField] private float _moveSpeed;
-    private bool isFacingRight;
-    
-    private float areaRadius = 2f;
     [SerializeField] private LayerMask targetLayerMask;
+    [SerializeField] private float _moveSpeed;
 
-   // public int currentHealth { get; private set; } 
+
+    private Rigidbody2D _rigidbody;
+    private bool isFacingRight;
+    private float areaRadius = 2f;
     private int maxHealth = 100;
+    
     public int currentHealth;
 
 
@@ -80,27 +78,34 @@ public class PlayerController : Singleton<PlayerController>
 
     private void DetectEnemyInArea()
     {
-        
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, areaRadius, targetLayerMask);
+        var colliders = Physics2D.OverlapCircleAll(transform.position, areaRadius, targetLayerMask);
 
         foreach (var collider in colliders)
-        {
+            
             if (collider.gameObject.CompareTag("Enemy"))
             {
                 Attack();
                 OnPlayerAttack?.Invoke(this,EventArgs.Empty);
             }
-            
-        }
     }
     
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log(currentHealth);
         if (currentHealth <= 0)
         {
             gameObject.SetActive(false);
+            GameManager.Instance.GameOver();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        IKillable iKillable = other.GetComponent<IKillable>();
+        if (iKillable !=null)
+        { 
+            iKillable.Die();
+            TakeDamage(1);
         }
     }
 }

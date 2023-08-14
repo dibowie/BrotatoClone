@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HealthManager : MonoBehaviour
@@ -20,4 +21,6 @@ public class HealthManager : MonoBehaviour
         _healthAmount = Mathf.Clamp(_healthAmount, 0, 100);
         _healthBar.fillAmount = _healthAmount / 100;
     }
+
+ 
 }

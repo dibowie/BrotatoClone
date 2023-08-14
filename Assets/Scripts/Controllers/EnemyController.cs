@@ -5,24 +5,21 @@ using UnityEngine;
 using DG.Tweening;
 
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Collider2D))]
-public class EnemyController : MonoBehaviour
+
+[RequireComponent(typeof(Collider2D),typeof(Rigidbody2D))]
+public class EnemyController : MonoBehaviour,IKillable
 {
-
-    private GameObject _target;
     [SerializeField] private float _enemyMoveSpeed;
-    private Rigidbody2D _rigidbody;
-    private Vector2 moveDirection;
-
-    private int _enemyMaxHealth = 2;
-    private int _enemyCurrentHealth;
-    
+    [SerializeField] private GameObject goldPrefab;
     [SerializeField] private float _strength;
     [SerializeField] private float _duration;
-
+    private GameObject _target;
+    private Rigidbody2D _rigidbody;
+    private Vector2 moveDirection;
+    private int _enemyMaxHealth = 2;
+    private int _enemyCurrentHealth;
     private Vector2 _initialScale;
-    [SerializeField] private GameObject goldPrefab;
+
 
 
     private void Awake()
@@ -56,11 +53,6 @@ public class EnemyController : MonoBehaviour
     {
         _enemyCurrentHealth -= damage;
         transform.DOShakeScale(_duration, _strength).OnComplete(() => ResetScale());
-        
-        if (_enemyCurrentHealth <= 0)
-        {
-            StartCoroutine(DeadRoutine());
-        }
     }
     
     private void ResetScale()
@@ -80,11 +72,8 @@ public class EnemyController : MonoBehaviour
         Instantiate(goldPrefab, transform.position,Quaternion.identity);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void Die()
     {
-        if (PlayerController.Instance)
-        {
-            PlayerController.Instance.TakeDamage(1);
-        }
+        StartCoroutine(DeadRoutine());
     }
 }

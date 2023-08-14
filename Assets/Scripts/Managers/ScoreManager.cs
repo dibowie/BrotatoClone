@@ -17,12 +17,12 @@ public class ScoreManager : MonoBehaviour
     private void OnCoinCollect(object sender, EventArgs e)
     {
         score++;
-        
     }
 
     private void Update()
     {
         UpdateScoreText();
+        CheckScore();
     }
 
     private void OnDisable()
@@ -36,5 +36,12 @@ public class ScoreManager : MonoBehaviour
             scoreText.text = score.ToString();
         }
     }
-    
+
+    private void CheckScore()
+    {
+        if (score >= 20)
+        {
+            GameManager.Instance.Win();
+        }
+    }
 }

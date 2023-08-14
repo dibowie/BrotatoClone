@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Singleton<EnemyManager>
 {
     [SerializeField] private int _enemyCount;
     [SerializeField] private GameObject _enemyPrefab;
@@ -17,7 +17,7 @@ public class EnemyManager : MonoBehaviour
         Init();
     }
 
-    private void Init()
+    public void Init()
     {
         for (int i = 0; i < _enemyCount; i++)
         {
